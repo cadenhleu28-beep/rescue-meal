@@ -1,0 +1,191 @@
+.about {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 72px 24px 40px;
+}
+
+.about-hero h1 {
+  max-width: 820px;
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 750;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.about-hero p {
+  max-width: 620px;
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.about-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.about-steps h2,
+.faq h2 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.steps {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  position: relative;
+  padding: 0 0 22px 44px;
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  background: var(--surface);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+.steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.steps h3 {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.steps p {
+  margin-top: 3px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.about-why {
+  margin-top: 64px;
+  max-width: 720px;
+}
+
+.about-why h2 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.about-why p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.faq {
+  margin-top: 72px;
+}
+
+.faq h2 {
+  margin-bottom: 12px;
+}
+
+.faq details {
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  font-size: 16px;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: '+';
+  flex: none;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink-3);
+}
+
+.faq details[open] summary::after {
+  content: '–';
+}
+
+.faq details p {
+  max-width: 720px;
+  padding-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.site-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 72px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.site-foot span:first-child {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .about {
+    padding-top: 44px;
+  }
+  .about-steps {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-top: 56px;
+  }
+}
