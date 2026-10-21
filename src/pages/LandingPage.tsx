@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Check } from 'lucide-react'
 import { homeFor, useAuth } from '../auth'
 import { CREATOR, PROJECT_STATUS } from '../data/creator'
 import { FINDER_STEPS, PARTNER_STEPS } from '../data/steps'
-import { MINUTE, clock, useNow } from '../lib/time'
 import { PortionDemo } from '../components/PortionDemo'
 import { TryDemo } from '../components/TryDemo'
 
@@ -14,7 +12,6 @@ const NJ_FOOD_SECURITY = 'https://www.nj.gov/foodsecurity/documents/The%20State%
 
 export default function LandingPage() {
   const { profile } = useAuth()
-  const now = useNow(60_000)
 
   // Using the app takes an account, so logged-out buttons lead to sign-up for the right role.
   const seekerHref = profile ? homeFor(profile) : '/signup'
@@ -37,8 +34,8 @@ export default function LandingPage() {
         <div className="hero-copy">
           <h1>Free food from restaurants near you, before they close.</h1>
           <p className="hero-sub">
-            Restaurants, bakeries and grocers post what’s left at the end of the day. You see it on a map, hold a
-            portion for 20 minutes, and pick it up.
+            Restaurants, bakeries and grocers post what’s left at the end of the day. You see it on a map, see how
+            much is left, and go pick it up.
           </p>
           <div className="hero-actions">
             <Link to={seekerHref} className="btn btn-primary btn-lg">
@@ -93,36 +90,6 @@ export default function LandingPage() {
       </section>
 
       <section className="mechanic">
-        <div className="mechanic-copy">
-          <h2>Reserve a portion and it’s held for 20 minutes.</h2>
-          <p>
-            Tap reserve and you get a four-letter code to show at the counter. If plans change, cancel it, or let it
-            lapse and the portion goes back for someone else.
-          </p>
-        </div>
-        <figure className="demo demo--narrow">
-          <div className="demo-ui">
-            <p className="demo-listing">
-              <strong>Vegetarian thali boxes</strong>
-              <span>Saffron Thali House · Oak Tree Road</span>
-            </p>
-            <div className="hold">
-              <div className="hold-head">
-                <Check size={18} strokeWidth={2.5} />
-                <span>
-                  Saved for you until <strong>{clock(now + 20 * MINUTE)}</strong>
-                </span>
-              </div>
-              <p>
-                Show this code at pickup: <span className="hold-code">K7MX</span>
-              </p>
-            </div>
-          </div>
-          <figcaption>Example reservation</figcaption>
-        </figure>
-      </section>
-
-      <section className="mechanic mechanic--flip">
         <div className="mechanic-copy">
           <h2>When you pick up, say how much you took. The count updates for everyone.</h2>
           <p>

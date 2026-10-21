@@ -43,15 +43,7 @@ export interface Listing {
   availableFrom: number
   availableUntil: number
   pickupNote: string
-  /** When false, pickup is first come, first served. */
-  reservable: boolean
   markedGone?: boolean
-}
-
-export interface Hold {
-  listingId: string
-  code: string
-  until: number
 }
 
 export interface Pickup {

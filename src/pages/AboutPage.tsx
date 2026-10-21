@@ -11,7 +11,7 @@ const FAQ = [
   {
     id: 'account',
     q: 'Do I need an account to get food?',
-    a: 'Yes, a free one. It takes about a minute and only needs your name, email and a password. Accounts let you reserve a portion and tell others how much you took, and they keep the map for real people nearby.',
+    a: 'Yes, a free one. It takes about a minute and only needs your name, email and a password. Accounts let you tell others how much you took, and they keep the map for real people nearby.',
   },
   {
     id: 'verification',

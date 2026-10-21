@@ -509,18 +509,6 @@
   color: var(--ink-2);
 }
 
-.hold-code {
-  display: inline-block;
-  padding: 1px 8px;
-  background: var(--ink);
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: #fff;
-  border-radius: 4px;
-}
-
 .hold-actions {
   display: flex;
   flex-wrap: wrap;

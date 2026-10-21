@@ -11,7 +11,7 @@ import { LocationPicker, geocode } from '../components/LocationPicker'
 const VENUE_KINDS = ['Restaurant', 'Bakery', 'Café', 'Grocery', 'Deli', 'Catering', 'Food truck']
 
 const ROLES: { value: Role; title: string; body: string; Icon: typeof Utensils }[] = [
-  { value: 'visitor', title: 'I’m looking for food', body: 'Reserve portions and let others know what’s left.', Icon: Utensils },
+  { value: 'visitor', title: 'I’m looking for food', body: 'See free food nearby and let others know what’s left.', Icon: Utensils },
   { value: 'restaurant', title: 'I run a restaurant or store', body: 'Post extra food for people nearby to pick up.', Icon: Store },
 ]
 

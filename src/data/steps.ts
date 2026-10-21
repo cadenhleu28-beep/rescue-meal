@@ -4,12 +4,8 @@ export const FINDER_STEPS = [
     body: 'Then open the map to see what’s out now or later today, how long each post lasts, and exactly where to pick it up.',
   },
   {
-    title: 'Hold a portion if you want one',
-    body: 'Reserve a portion and it’s held for 20 minutes. If you can’t make it, it goes back for someone else.',
-  },
-  {
     title: 'Pick it up',
-    body: 'Follow the pickup note on the post. If you reserved, show your four-letter code at the counter.',
+    body: 'Follow the pickup note on the post. It’s first come, first served, so check how many are left before you head over.',
   },
   {
     title: 'Say how much you took',

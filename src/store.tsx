@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import type { Allergen, Category, Dietary, Hold, Listing, Pickup, Venue, VerificationStatus } from './types'
+import type { Allergen, Category, Dietary, Listing, Pickup, Venue, VerificationStatus } from './types'
 import { supabase } from './lib/supabase'
 import { useAuth } from './auth'
 
@@ -21,7 +21,6 @@ interface ListingRow {
   available_from: string
   available_until: string
   pickup_note: string
-  reservable: boolean
   marked_gone: boolean
 }
 
@@ -36,12 +35,6 @@ interface VenueRow {
   owner_id: string | null
   verification_status: VerificationStatus
   is_demo?: boolean
-}
-
-interface HoldRow {
-  listing_id: string
-  code: string
-  until: string
 }
 
 interface PickupRow {
@@ -64,7 +57,6 @@ const toListing = (r: ListingRow): Listing => ({
   availableFrom: Date.parse(r.available_from),
   availableUntil: Date.parse(r.available_until),
   pickupNote: r.pickup_note,
-  reservable: r.reservable,
   markedGone: r.marked_gone,
 })
 
@@ -81,7 +73,6 @@ const toVenue = (r: VenueRow): Venue => ({
   isDemo: r.is_demo ?? false,
 })
 
-const toHold = (r: HoldRow): Hold => ({ listingId: r.listing_id, code: r.code, until: Date.parse(r.until) })
 const toPickup = (r: PickupRow): Pickup => ({ listingId: r.listing_id, portions: r.portions, at: Date.parse(r.taken_at) })
 
 const byListing = <T extends { listingId: string }>(items: T[]) => Object.fromEntries(items.map((x) => [x.listingId, x]))
@@ -103,13 +94,10 @@ interface StoreValue {
   venues: Venue[]
   venueById: (id: string) => Venue | undefined
   listings: Listing[]
-  holds: Record<string, Hold>
   pickups: Record<string, Pickup>
   addListing: (input: NewListing) => Promise<Listing>
   extendListing: (id: string, minutes: number) => Promise<void>
   markGone: (id: string) => Promise<void>
-  reserve: (id: string) => Promise<void>
-  cancelHold: (id: string) => Promise<void>
   pickUp: (id: string, portions: number) => Promise<void>
   undoPickUp: (id: string) => Promise<void>
   refreshVenues: () => Promise<void>
@@ -123,13 +111,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [venues, setVenues] = useState<Venue[]>([])
   const [listings, setListings] = useState<Listing[]>([])
-  const [holds, setHolds] = useState<Record<string, Hold>>({})
   const [pickups, setPickups] = useState<Record<string, Pickup>>({})
 
   // Everything is scoped to the signed-in user: nothing loads until someone logs in.
   useEffect(() => {
     let cancelled = false
-    setHolds({})
     setPickups({})
     if (!userId) {
       setVenues([])
@@ -157,16 +143,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ;(async () => {
       try {
         check(await supabase.rpc('refresh_demo'))
-        const [v, l, h, p] = await Promise.all([
+        const [v, l, p] = await Promise.all([
           supabase.from('venues').select('*'),
           supabase.from('listings').select('*').order('posted_at', { ascending: false }),
-          supabase.from('holds').select('listing_id, code, until'),
           supabase.from('pickups').select('listing_id, portions, taken_at'),
         ])
         if (cancelled) return
         setVenues((check(v) as VenueRow[]).map(toVenue))
         setListings((check(l) as ListingRow[]).map(toListing))
-        setHolds(byListing((check(h) as HoldRow[]).map(toHold)))
         setPickups(byListing((check(p) as PickupRow[]).map(toPickup)))
         setStatus('ready')
       } catch (e) {
@@ -207,7 +191,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         p_available_from: new Date(input.availableFrom).toISOString(),
         p_available_until: new Date(input.availableUntil).toISOString(),
         p_pickup_note: input.pickupNote,
-        p_reservable: input.reservable,
       }),
     ) as ListingRow
     const listing = toListing(row)
@@ -225,29 +208,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setListings((ls) => upsert(ls, toListing(row)))
   }, [])
 
-  const reserve = useCallback(
-    async (id: string) => {
-      const hold = toHold(check(await supabase.rpc('reserve', { p_listing: id })) as HoldRow)
-      setHolds((hs) => ({ ...hs, [id]: hold }))
-      await refreshListing(id)
-    },
-    [refreshListing],
-  )
-
-  const cancelHold = useCallback(
-    async (id: string) => {
-      check(await supabase.rpc('cancel_hold', { p_listing: id }))
-      setHolds(({ [id]: _removed, ...rest }) => rest)
-      await refreshListing(id)
-    },
-    [refreshListing],
-  )
-
   const pickUp = useCallback(
     async (id: string, portions: number) => {
       const pickup = toPickup(check(await supabase.rpc('take_portions', { p_listing: id, p_portions: portions })) as PickupRow)
       setPickups((ps) => ({ ...ps, [id]: pickup }))
-      setHolds(({ [id]: _removed, ...rest }) => rest)
       await refreshListing(id)
     },
     [refreshListing],
@@ -269,18 +233,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       venues,
       venueById,
       listings,
-      holds,
       pickups,
       addListing,
       extendListing,
       markGone,
-      reserve,
-      cancelHold,
       pickUp,
       undoPickUp,
       refreshVenues,
     }),
-    [status, loadError, venues, venueById, listings, holds, pickups, addListing, extendListing, markGone, reserve, cancelHold, pickUp, undoPickUp, refreshVenues],
+    [status, loadError, venues, venueById, listings, pickups, addListing, extendListing, markGone, pickUp, undoPickUp, refreshVenues],
   )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

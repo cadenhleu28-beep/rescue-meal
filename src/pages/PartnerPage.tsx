@@ -62,7 +62,6 @@ function Dashboard({ venue }: { venue: Venue }) {
   const [startIn, setStartIn] = useState(0)
   const [lasts, setLasts] = useState(90)
   const [pickupNote, setPickupNote] = useState('')
-  const [reservable, setReservable] = useState(true)
   const [safe, setSafe] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [toast, setToast] = useState<Listing | null>(null)
@@ -111,7 +110,6 @@ function Dashboard({ venue }: { venue: Venue }) {
     availableFrom: from,
     availableUntil: until,
     pickupNote,
-    reservable,
   }
 
   const mine = useMemo(
@@ -156,7 +154,6 @@ function Dashboard({ venue }: { venue: Venue }) {
         availableFrom: Math.max(from, Date.now()),
         availableUntil: until,
         pickupNote: pickupNote.trim(),
-        reservable,
       })
       setToast(created)
       setTab('active')
@@ -363,16 +360,6 @@ function Dashboard({ venue }: { venue: Venue }) {
                 })}
               </div>
             </fieldset>
-
-            <label className="check-row">
-              <input type="checkbox" checked={reservable} onChange={(e) => setReservable(e.target.checked)} />
-              <span>
-                <strong>Let people reserve a portion</strong>
-                <span className="field-hint">
-                  Holds one portion for 20 minutes. Turn this off for self-serve racks or bins.
-                </span>
-              </span>
-            </label>
 
             <label className={`check-row${showError('safe') ? ' has-error' : ''}`}>
               <input type="checkbox" checked={safe} onChange={(e) => setSafe(e.target.checked)} />

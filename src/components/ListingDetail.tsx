@@ -24,7 +24,7 @@ interface Props {
 const REPORT_REASONS = ['Food was already gone', "Couldn't find the pickup spot", 'Food safety concern', 'Something else']
 
 export function ListingDetail({ listing, venue, state, miles, now, onBack, onShowMap }: Props) {
-  const { holds, pickups, reserve, cancelHold, pickUp, undoPickUp } = useStore()
+  const { pickups, pickUp, undoPickUp } = useStore()
   const { userId } = useAuth()
   const navigate = useNavigate()
   const [reporting, setReporting] = useState(false)
@@ -48,12 +48,8 @@ export function ListingDetail({ listing, venue, state, miles, now, onBack, onSho
     }
     setBusy(false)
   }
-  const hold = holds[listing.id]
-  const activeHold = hold && hold.until > now ? hold : null
   const pickup = pickups[listing.id]
-  // Portions this visitor could say they took: what's left, plus the one their reservation set aside.
-  const canTake = listing.portionsLeft + (activeHold ? 1 : 0)
-  const canPickUp = state !== 'upcoming' && state !== 'ended' && canTake > 0
+  const canPickUp = state !== 'upcoming' && state !== 'ended' && listing.portionsLeft > 0
 
   const windowMs = listing.availableUntil - listing.availableFrom
   const elapsed = Math.min(1, Math.max(0, (now - listing.availableFrom) / windowMs))
@@ -165,7 +161,7 @@ export function ListingDetail({ listing, venue, state, miles, now, onBack, onSho
           </div>
         ) : reporting && canPickUp ? (
           <TakePortions
-            max={canTake}
+            max={listing.portionsLeft}
             busy={busy}
             onConfirm={(n) =>
               run(async () => {
@@ -175,43 +171,10 @@ export function ListingDetail({ listing, venue, state, miles, now, onBack, onSho
             }
             onCancel={() => setReporting(false)}
           />
-        ) : activeHold ? (
-          <div className="hold">
-            <div className="hold-head">
-              <Check size={18} strokeWidth={2.5} />
-              <span>
-                Saved for you until <strong>{clock(activeHold.until)}</strong>
-              </span>
-            </div>
-            <p>
-              Show this code at pickup: <span className="hold-code">{activeHold.code}</span>
-            </p>
-            <div className="hold-actions">
-              <a className="btn btn-primary" href={directionsUrl(venue)} target="_blank" rel="noreferrer">
-                Get directions <ExternalLink size={15} />
-              </a>
-              <button type="button" className="btn btn-secondary" onClick={() => setReporting(true)}>
-                <ShoppingBag size={15} /> I picked it up
-              </button>
-              <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => run(() => cancelHold(listing.id))}>
-                Cancel reservation
-              </button>
-            </div>
-          </div>
         ) : (
           <>
-            {listing.reservable ? (
-              <button
-                type="button"
-                className="btn btn-primary btn-lg"
-                disabled={busy || state === 'upcoming' || listing.portionsLeft <= 0}
-                onClick={signedIn(() => run(() => reserve(listing.id)))}
-              >
-                Reserve a portion
-              </button>
-            ) : null}
             <a
-              className={`btn btn-lg ${listing.reservable ? 'btn-secondary' : 'btn-primary'}`}
+              className="btn btn-primary btn-lg"
               href={directionsUrl(venue)}
               target="_blank"
               rel="noreferrer"
@@ -224,13 +187,11 @@ export function ListingDetail({ listing, venue, state, miles, now, onBack, onSho
               </button>
             )}
             <p className="actions-note">
-              {!userId
-                ? 'Log in to reserve a portion or say how much you took.'
-                : listing.reservable
-                ? state === 'upcoming'
-                  ? `Reservations open at ${clock(listing.availableFrom)}.`
-                  : 'Reservations hold one portion for 20 minutes.'
-                : 'First come, first served. No reservations for this one.'}
+              {state === 'upcoming'
+                ? `First come, first served from ${clock(listing.availableFrom)}.`
+                : !userId
+                ? 'First come, first served. Log in to say how much you took.'
+                : 'First come, first served. After you pick up, tap “I took some” so the count stays right.'}
             </p>
           </>
         )}
