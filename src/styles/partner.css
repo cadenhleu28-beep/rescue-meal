@@ -655,3 +655,220 @@
     gap: 0;
   }
 }
+
+/* Counter mode: full screen, high contrast, made for a phone or tablet at the register. */
+
+.counter {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: #0f110e;
+  color: #fff;
+  overflow-y: auto;
+}
+
+.counter-missing {
+  margin: auto;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.counter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.counter-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 16px 0 12px;
+  border: 1px solid #3a3d38;
+  border-radius: var(--radius);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.counter-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.counter-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.counter-time--live {
+  color: #7fd6a2;
+}
+
+.counter-time--live .counter-dot {
+  animation: counter-pulse 2s ease-in-out infinite;
+}
+
+.counter-time--soon {
+  color: #ffb08f;
+}
+
+.counter-time--ended {
+  color: #a3a69d;
+}
+
+@keyframes counter-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.counter-readout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.counter-title {
+  max-width: 32ch;
+  font-size: 20px;
+  font-weight: 600;
+  color: #d4d6cf;
+}
+
+.counter-num {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.counter-num strong {
+  font-size: clamp(120px, 34vw, 240px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.counter-num span {
+  font-size: 22px;
+  color: #a3a69d;
+}
+
+.counter-error {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: #4a1410;
+  color: #ffd2cc;
+  font-weight: 600;
+}
+
+.counter-undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  margin-bottom: 12px;
+  font-size: 17px;
+}
+
+.counter-undo:empty {
+  visibility: hidden;
+}
+
+.counter-undo:not(:empty) {
+  padding: 0 8px 0 16px;
+  border-radius: var(--radius);
+  background: #24271f;
+}
+
+.counter-undo button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.counter-tap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: min(36vh, 300px);
+  padding: 24px;
+  border: 0;
+  border-radius: 12px;
+  background: #1f8a4e;
+  color: #fff;
+  font-size: clamp(24px, 6vw, 34px);
+  font-weight: 700;
+  line-height: 1.15;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.06s, background-color 0.06s;
+}
+
+.counter-tap:active {
+  transform: scale(0.98);
+  background: var(--brand);
+}
+
+.counter-tap:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 3px;
+}
+
+.counter-done {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: min(36vh, 300px);
+  padding: 24px;
+  border: 2px solid #3a3d38;
+  border-radius: 12px;
+  color: #7fd6a2;
+  text-align: center;
+}
+
+.counter-done p {
+  font-size: clamp(24px, 6vw, 32px);
+  font-weight: 700;
+  color: #fff;
+}
+
+.counter-done span {
+  font-size: 17px;
+  color: #a3a69d;
+}

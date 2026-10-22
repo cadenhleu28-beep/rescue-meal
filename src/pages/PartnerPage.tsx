@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, Minus, Plus, X } from 'lucide-react'
+import { Check, Hash, Minus, Plus, X } from 'lucide-react'
 import type { Allergen, Category, Dietary, Listing, Venue } from '../types'
 import { ALLERGENS, ALLERGEN_LABELS, CATEGORIES, CATEGORY_LABELS, DIETARY, DIETARY_LABELS } from '../data/labels'
 import { isActive, listingState } from '../lib/listing'
@@ -404,7 +404,7 @@ function Dashboard({ venue }: { venue: Venue }) {
             <div className="panel-head panel-head--row">
               <div>
                 <h2>Your posts</h2>
-                <p>Visitors update the count when they take food.</p>
+                <p>Handing food over at the register? Open the counter and tap once per portion.</p>
               </div>
               <div className="tabs" role="tablist">
                 <button type="button" role="tab" aria-selected={tab === 'active'} onClick={() => setTab('active')}>
@@ -449,6 +449,10 @@ function Dashboard({ venue }: { venue: Venue }) {
                           <> · {listing.portionsTotal - listing.portionsLeft} taken</>
                         )}
                       </p>
+                      <Link to={`/partner/counter/${listing.id}`} className="btn btn-primary btn-sm">
+                        <Hash size={15} strokeWidth={2.4} />
+                        Open counter
+                      </Link>
                       <button
                         type="button"
                         className="btn btn-secondary btn-sm"

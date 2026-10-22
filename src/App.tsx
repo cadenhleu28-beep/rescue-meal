@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 // The map library is large; only pages that show a map load it.
 const FindPage = lazy(() => import('./pages/FindPage'))
 const PartnerPage = lazy(() => import('./pages/PartnerPage'))
+const CounterPage = lazy(() => import('./pages/CounterPage'))
 const SignupPage = lazy(() => import('./pages/SignupPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 
@@ -48,6 +49,14 @@ export default function App() {
               element={
                 <RequireAccount gate="restaurant">
                   <PartnerPage />
+                </RequireAccount>
+              }
+            />
+            <Route
+              path="/partner/counter/:id"
+              element={
+                <RequireAccount gate="restaurant">
+                  <CounterPage />
                 </RequireAccount>
               }
             />

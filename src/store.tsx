@@ -98,6 +98,9 @@ interface StoreValue {
   addListing: (input: NewListing) => Promise<Listing>
   extendListing: (id: string, minutes: number) => Promise<void>
   markGone: (id: string) => Promise<void>
+  /** Counter mode: staff log one portion handed over at the register. */
+  handOut: (id: string) => Promise<void>
+  undoHandOut: (id: string) => Promise<void>
   pickUp: (id: string, portions: number) => Promise<void>
   undoPickUp: (id: string) => Promise<void>
   refreshVenues: () => Promise<void>
@@ -208,6 +211,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setListings((ls) => upsert(ls, toListing(row)))
   }, [])
 
+  const handOut = useCallback(async (id: string) => {
+    const row = check(await supabase.rpc('decrement_portion', { p_listing: id })) as ListingRow
+    setListings((ls) => upsert(ls, toListing(row)))
+  }, [])
+
+  const undoHandOut = useCallback(async (id: string) => {
+    const row = check(await supabase.rpc('undo_decrement_portion', { p_listing: id })) as ListingRow
+    setListings((ls) => upsert(ls, toListing(row)))
+  }, [])
+
   const pickUp = useCallback(
     async (id: string, portions: number) => {
       const pickup = toPickup(check(await supabase.rpc('take_portions', { p_listing: id, p_portions: portions })) as PickupRow)
@@ -237,11 +250,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       addListing,
       extendListing,
       markGone,
+      handOut,
+      undoHandOut,
       pickUp,
       undoPickUp,
       refreshVenues,
     }),
-    [status, loadError, venues, venueById, listings, pickups, addListing, extendListing, markGone, pickUp, undoPickUp, refreshVenues],
+    [
+      status,
+      loadError,
+      venues,
+      venueById,
+      listings,
+      pickups,
+      addListing,
+      extendListing,
+      markGone,
+      handOut,
+      undoHandOut,
+      pickUp,
+      undoPickUp,
+      refreshVenues,
+    ],
   )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

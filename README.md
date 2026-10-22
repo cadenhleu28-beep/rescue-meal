@@ -25,6 +25,7 @@ Live at **https://rescue-meal-flax.vercel.app** (Vercel project `rescue-meal`). 
 - `/` **Landing page**: what Rescue Meal is, how it works, sign up / log in, or try the demo.
 - `/find` **Find food** (signed-in users): list + map of everything available now or later today. Search, filter, sort, "Near me", details, directions, "I took some". Pickup is first come, first served.
 - `/partner` **Restaurant dashboard** (restaurant accounts only): new restaurants first verify their business (license or permit number, phone, a photo or PDF of the document). Once approved: post extra food with a live preview, add time, mark as gone, see past posts.
+- `/partner/counter/:id` **Counter mode** (restaurant accounts only): a full-screen, high-contrast screen for the register. Staff tap one big button for each portion they hand over (with an 8-second undo), see what's left and how long the pickup window has. The screen stays on while it's open.
 - `/admin` **Verification review** (admins only): approve restaurants, or send them back with a reason.
 - `/signup`, `/login`: email and password accounts. People choose "looking for food" or "I run a restaurant"; restaurants also give their business name and address and drop a pin for the pickup spot.
 - `/how-it-works`: steps for both sides and the FAQ (including Good Samaritan liability protection).
@@ -46,7 +47,7 @@ React 18 + TypeScript + Vite, React Router, Leaflet (via react-leaflet) with fre
 - Nothing is readable without signing in; logged-out requests get empty results.
 - "Try the demo" signs up a throwaway account (a random `@example.com` address and a random password). A demo restaurant gets its own venue that is verified straight away, but that venue and its posts are visible only to the account that made it, so demo posts never reach other people's maps. This relies on email confirmation being off.
 - To make someone an admin, run in the Supabase SQL editor: `update profiles set is_admin = true where id = (select id from auth.users where email = 'you@example.com');`
-- The app can read listings but can't change them directly. Every change goes through a database function that checks the rules: no negative counts, one pickup report per person per listing.
+- The app can read listings but can't change them directly. Every change goes through a database function that checks the rules: no negative counts, one pickup report per person per listing. Counter taps (`decrement_portion`, `undo_decrement_portion`) are one atomic update each, so two registers and a visitor's report can't push a count below zero.
 - Sample listings refresh themselves (with times relative to now) when they're more than 6 hours old. Posts made from the dashboard are kept.
 - To set up a new Supabase project, run the files in `supabase/migrations/` in order in the SQL editor.
 

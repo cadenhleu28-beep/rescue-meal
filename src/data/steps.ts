@@ -28,6 +28,6 @@ export const PARTNER_STEPS = [
   },
   {
     title: 'Let it run itself',
-    body: 'People who pick up food update the count. Add time or mark it gone if you need to. Posts end on their own when the pickup window closes.',
+    body: 'Staff tap the counter screen once for each portion they hand over, and people who take food from a shelf or bin update the count themselves. Add time or mark it gone if you need to. Posts end on their own when the pickup window closes.',
   },
 ]
